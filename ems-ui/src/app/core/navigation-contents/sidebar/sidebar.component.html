@@ -1,0 +1,22 @@
+<nav id="sidebar" [ngClass]="isOpen ? 'active' : ''">
+
+  <ul class="list-unstyled sidebar-items">
+    <p class="sidebar-header">Codesaaz Employee Leave</p>
+    <li>
+      <a routerLink="/home/employees" *ngIf="_authService.isAdmin()" routerLinkActive="active">Employee</a>
+    </li>
+    <li>
+      <a routerLink="/home/leaverequests" *ngIf="_authService.isAdmin()" routerLinkActive="active">Leave Request</a>
+    </li>
+    <li>
+      <a routerLink="/home/employeeleaves" *ngIf="!_authService.isAdmin()" routerLinkActive="active">Employee Leaves</a>
+    </li>
+    <li>
+      <a routerLink="/home/leavetypes" *ngIf="_authService.isAdmin()" routerLinkActive="active">Leave Type</a>
+    </li>
+    <li>
+      <a routerLink="/home/event" *ngIf="_authService.isAdmin()" routerLinkActive="active">Event</a>
+    </li>
+  </ul>
+
+</nav>

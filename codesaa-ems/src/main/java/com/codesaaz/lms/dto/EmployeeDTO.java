@@ -6,6 +6,12 @@ public class EmployeeDTO {
 
     private Long employeeId;
 
+    private Integer totalLeave;
+
+    private Integer leaveConsumed;
+
+    private Integer leaveRemaining;
+
     private String firstName;
 
     private String middleName;
@@ -122,5 +128,29 @@ public class EmployeeDTO {
 
     public void setSupervisor(EmployeeDTO supervisor) {
         this.supervisor = supervisor;
+    }
+
+    public Integer getTotalLeave() {
+        return totalLeave;
+    }
+
+    public void setTotalLeave(Integer totalLeave) {
+        this.totalLeave = totalLeave;
+    }
+
+    public Integer getLeaveConsumed() {
+        return leaveConsumed;
+    }
+
+    public void setLeaveConsumed(Integer leaveConsumed) {
+        this.leaveConsumed = leaveConsumed;
+    }
+
+    public Integer getLeaveRemaining() {
+        return leaveRemaining;
+    }
+
+    public void setLeaveRemaining(Integer leaveRemaining) {
+        this.leaveRemaining = leaveRemaining;
     }
 }

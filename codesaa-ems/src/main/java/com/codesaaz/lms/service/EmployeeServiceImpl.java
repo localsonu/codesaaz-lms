@@ -3,7 +3,8 @@ package com.codesaaz.lms.service;
 import com.codesaaz.lms.exceptions.DataConflictException;
 import com.codesaaz.lms.exceptions.DataNotFoundException;
 import com.codesaaz.lms.repository.EmployeeRepository;
-import com.codesaaz.lms.security.ExtractUserAuthentication;
+import com.codesaaz.lms.repository.LeaveRepository;
+import com.codesaaz.lms.security.ExtractAuthUser;
 import com.codesaaz.lms.util.ExceptionConstants;
 import com.codesaaz.lms.dto.EmployeeDTO;
 import com.codesaaz.lms.entity.Employee;
@@ -20,19 +21,16 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final LeaveRepository leaveRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    public EmployeeServiceImpl(final EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder) {
+    public EmployeeServiceImpl(final EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, LeaveRepository leaveRepository) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
+        this.leaveRepository = leaveRepository;
     }
 
-    /**
-     * Get all Employees Record
-     *
-     * @return List of Employee
-     */
     @Override
     public Page<EmployeeDTO> getAllEmployees(Pageable pageable) {
 
@@ -40,12 +38,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .map(employee -> EmployeeMapper.mapToDTOWithSupervisor(employee));
     }
 
-    /**
-     * Get single Employee Record
-     *
-     * @param id
-     * @return If present Employee else throws Exception
-     */
     @Override
     public EmployeeDTO getEmployeeById(Long id) {
 
@@ -57,19 +49,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO retrieveAuthenticatedEmployee() {
 
-        long authenticatedEmployeeId = ExtractUserAuthentication.getCurrentUser().getId();
+        long authenticatedEmployeeId = ExtractAuthUser.getCurrentUser().getEmployeeId();
         Employee employee = employeeRepository.findById(authenticatedEmployeeId)
                 .orElseThrow(() -> new DataNotFoundException(ExceptionConstants.EMPLOYEE_RECORD_NOT_FOUND));
         return EmployeeMapper.mapToDTOWithSupervisor(employee);
     }
 
-    /**
-     * Create New Employee
-     * If EmployeeSupervisor id is sent but id doesn't exist in database then throws Exception
-     *
-     * @param employeeDTO
-     * @return saved Employee
-     */
     @Override
     public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
 
@@ -82,24 +67,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeDTO.getUsername() == null || employeeRepository.findByUsername(employeeDTO.getUsername()) != null) {
             throw new DataNotFoundException(ExceptionConstants.EMPLOYEE_USERNAME_NOT_VALID);
         }
-
         employeeDTO.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
         employeeDTO.setRole("ROLE_USER");
         employeeDTO.setPhoneNumber(employeeDTO.getPhoneNumber());
         employeeDTO.setStatus(employeeDTO.getStatus());
+        employeeDTO.setTotalLeave(employeeDTO.getTotalLeave());
+        employeeDTO.setLeaveConsumed(0);
+        employeeDTO.setLeaveRemaining(0);
         Employee employee = employeeRepository.save(EmployeeMapper.mapToEntityWithSupervisor(employeeDTO));
         return EmployeeMapper.mapToDto(employee);
     }
 
-    /**
-     * Update Employee
-     * Employee must be present in database else throws Exception
-     * Employee cannot be their own Supervisor and EmployeeSupervisor id must be present in database else throws Exception
-     * Can only update Employee FullName, Email and EmployeeSupervisor
-     *
-     * @param employeeDTO
-     * @return updated Employee
-     */
     @Override
     public EmployeeDTO updateEmployee(EmployeeDTO employeeDTO) {
 
@@ -129,7 +107,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO updatePassword(String oldPassword, String newPassword) {
 
-        long authenticatedEmployeeId = ExtractUserAuthentication.getCurrentUser().getId();
+        long authenticatedEmployeeId = ExtractAuthUser.getCurrentUser().getEmployeeId();
         Employee employee = employeeRepository.findById(authenticatedEmployeeId)
                 .orElseThrow(() -> new DataNotFoundException(ExceptionConstants.EMPLOYEE_RECORD_NOT_FOUND));
         if (!passwordEncoder.matches(oldPassword, employee.getPassword())) {

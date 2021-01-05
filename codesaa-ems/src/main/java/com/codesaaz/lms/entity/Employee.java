@@ -1,6 +1,7 @@
 package com.codesaaz.lms.entity;
 
 import com.codesaaz.lms.util.enums.EmployeeStatus;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -8,7 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name="employee")
+@Table(name = "employee")
+@NoArgsConstructor
 public class Employee {
 
     @Id
@@ -49,12 +51,46 @@ public class Employee {
     private EmployeeStatus status;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="supervisor")
+    @JoinColumn(name = "supervisor")
     private Employee supervisor;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
+
+    @Column(name = "total_leave", nullable = false)
+    private Integer totalLeave;
+
+    @Column(name = "leave_remaining", nullable = false)
+    private Integer leaveRemaining;
+
+    @Column(name = "leave_consumed", nullable = true)
+    private Integer leaveConsumed;
+
+
+    public Integer getTotalLeave() {
+        return totalLeave;
+    }
+
+    public void setTotalLeave(Integer totalLeave) {
+        this.totalLeave = totalLeave;
+    }
+
+    public Integer getLeaveRemaining() {
+        return leaveRemaining;
+    }
+
+    public void setLeaveRemaining(Integer leaveRemaining) {
+        this.leaveRemaining = leaveRemaining;
+    }
+
+    public Integer getLeaveConsumed() {
+        return leaveConsumed;
+    }
+
+    public void setLeaveConsumed(Integer leaveConsumed) {
+        this.leaveConsumed = leaveConsumed;
+    }
 
     public Long getEmployeeId() {
         return employeeId;
@@ -177,11 +213,33 @@ public class Employee {
                 Objects.equals(createdAt, employee.createdAt) &&
                 status == employee.status &&
                 Objects.equals(supervisor, employee.supervisor) &&
+                Objects.equals(totalLeave, employee.totalLeave) &&
+                Objects.equals(leaveRemaining, employee.leaveRemaining) &&
+                Objects.equals(leaveConsumed, employee.leaveConsumed) &&
                 Objects.equals(group, employee.group);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(employeeId, firstName, middleName, lastName, email, username, password, role, phoneNumber, createdAt, status, supervisor, group);
+        return Objects.hash(employeeId, firstName, middleName, lastName, email, username, password, role, phoneNumber, createdAt, status, supervisor, group, leaveConsumed, leaveRemaining, totalLeave);
+    }
+
+    public Employee(Employee employee) {
+        this.employeeId = employee.getEmployeeId();
+        this.firstName = employee.getFirstName();
+        this.middleName = employee.getMiddleName();
+        this.lastName = employee.getLastName();
+        this.email = employee.getEmail();
+        this.username = employee.getUsername();
+        this.password = employee.getPassword();
+        this.role = employee.getRole();
+        this.phoneNumber = employee.getPhoneNumber();
+        this.createdAt = employee.getCreatedAt();
+        this.status = employee.getStatus();
+        this.supervisor = employee.getSupervisor();
+        this.group = employee.getGroup();
+        this.totalLeave = employee.getTotalLeave();
+        this.leaveRemaining = employee.getLeaveRemaining();
+        this.leaveConsumed = employee.getLeaveConsumed();
     }
 }

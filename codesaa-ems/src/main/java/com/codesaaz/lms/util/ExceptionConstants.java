@@ -11,6 +11,9 @@ public class ExceptionConstants {
     // Leave Exception Constant
     public static final String EMPLOYEE_LEAVE_RECORD_NOT_FOUND = "Employee leave record not found";
     public static final String EMPLOYEE_LEAVE_ACTION_ALREADY_TAKEN = "Action already taken on this leave request";
+    public static final String EMPLOYEE_LEAVE_LIMIT_EXCEED = "Sorry !!! Your Leave Bucket Empty";
+    public static final String EMPLOYEE_LEAVE_ALREADY_APPROVED = "Sorry !!! Leave Already Approved";
+    public static final String EMPLOYEE_LEAVE_ALREADY_DENIED = "Sorry !!! Leave Already Denied";
 
     // LeaveType Exception Constant
     public static final String LEAVE_TYPE_RECORD_NOT_FOUND = "Leave type not found";

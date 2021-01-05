@@ -20,11 +20,13 @@ public class EmployeeLeaveApplication implements CommandLineRunner {
     @Value("${app.security.initial.admin-username:admin}")
     private String initialAdminUsername;
 
-    @Value("${app.security.initial.admin-pass:admin}")
+    @Value("${app.security.initial.admin-pass:pass}")
     private String initialAdminPass;
 
-    @Autowired private PasswordEncoder passwordEncoder;
-    @Autowired private EmployeeRepository employeeRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(EmployeeLeaveApplication.class, args);
@@ -33,7 +35,7 @@ public class EmployeeLeaveApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         Employee admin = employeeRepository.findByUsername(initialAdminUsername);
-        if(admin == null){
+        if (admin == null) {
             LOGGER.warn("Initial Admin-User Not Found, initializing default admin with username: ", initialAdminUsername);
             String initialAdminPassword = passwordEncoder.encode(initialAdminPass);
             Employee defaultAdmin = new Employee();
@@ -43,6 +45,8 @@ public class EmployeeLeaveApplication implements CommandLineRunner {
             defaultAdmin.setPhoneNumber("000000000");
             defaultAdmin.setPassword(initialAdminPassword);
             defaultAdmin.setRole("ROLE_ADMIN");
+            defaultAdmin.setLeaveRemaining(0);
+            defaultAdmin.setTotalLeave(20);
             defaultAdmin.setStatus(EmployeeStatus.ACTIVE);
             employeeRepository.save(defaultAdmin);
             LOGGER.info("Default Admin-User Initialization Successful");

@@ -3,9 +3,10 @@ package com.codesaaz.lms.service;
 import com.codesaaz.lms.exceptions.DataConflictException;
 import com.codesaaz.lms.exceptions.DataNotFoundException;
 import com.codesaaz.lms.exceptions.UnauthorizedRequest;
+import com.codesaaz.lms.repository.EmployeeRepository;
 import com.codesaaz.lms.repository.LeaveRepository;
-import com.codesaaz.lms.security.ExtractUserAuthentication;
 import com.codesaaz.lms.mapper.StatusMapper;
+import com.codesaaz.lms.security.ExtractAuthUser;
 import com.codesaaz.lms.util.DateUtil;
 import com.codesaaz.lms.util.ExceptionConstants;
 import com.codesaaz.lms.dto.EmployeeDTO;
@@ -13,6 +14,7 @@ import com.codesaaz.lms.dto.LeaveDTO;
 import com.codesaaz.lms.entity.Employee;
 import com.codesaaz.lms.entity.Leave;
 import com.codesaaz.lms.mapper.LeaveMapper;
+import com.codesaaz.lms.util.enums.LeaveStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,13 +26,16 @@ import java.util.stream.Collectors;
 public class LeaveServiceImpl implements LeaveService {
 
     private final LeaveRepository employeeLeaveRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public LeaveServiceImpl(final LeaveRepository employeeLeaveRepository){
+    public LeaveServiceImpl(final LeaveRepository employeeLeaveRepository, final EmployeeRepository employeeRepository) {
         this.employeeLeaveRepository = employeeLeaveRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     /**
      * Get all Leave Record
+     *
      * @return List of Leave
      */
     @Override
@@ -42,6 +47,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     /**
      * Get single Leave Record
+     *
      * @param id
      * @return If present Leave else throw Exception
      */
@@ -53,19 +59,24 @@ public class LeaveServiceImpl implements LeaveService {
         return LeaveMapper.mapToDto(employeeLeave);
     }
 
-    /**
-     * Create New Leave Request
-     * @param leaveDTO
-     * @return saved Leave
-     */
+    @Override
+    public Page<Leave> getEmployeeLeaveByEmployeeId(Pageable pageable, Long id) {
+        Page<Leave> employeeLeave = employeeLeaveRepository.findLeaveByEmployeeEmployeeId(id, pageable);
+        return employeeLeave;
+    }
+
     @Override
     public LeaveDTO createEmployeeLeave(LeaveDTO leaveDTO) {
 
-        if(leaveDTO.getLeaveTypeDTO() == null){
+        if (leaveDTO.getLeaveTypeDTO() == null) {
             throw new DataNotFoundException(ExceptionConstants.LEAVE_TYPE_RECORD_NOT_FOUND);
         }
         // Setting current employee id on current newly created Leave Request
-        long employeeId = ExtractUserAuthentication.getCurrentUser().getId();
+        long employeeId = ExtractAuthUser.getCurrentUser().getEmployeeId();
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee.getTotalLeave() == employee.getLeaveConsumed()) {
+            throw new DataConflictException(ExceptionConstants.EMPLOYEE_LEAVE_LIMIT_EXCEED);
+        }
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setEmployeeId(employeeId);
 
@@ -75,13 +86,6 @@ public class LeaveServiceImpl implements LeaveService {
         return LeaveMapper.mapToDto(employeeLeave);
     }
 
-    /**
-     * Update Leave
-     * Leave Record must be present in database else throws Exception
-     * Leave status must be in pending else throws Exception
-     * @param leaveDTO
-     * @return updated Leave
-     */
     @Override
     public LeaveDTO updateEmployeeLeave(LeaveDTO leaveDTO) {
 
@@ -89,7 +93,7 @@ public class LeaveServiceImpl implements LeaveService {
                 .orElseThrow(() -> new DataNotFoundException(ExceptionConstants.EMPLOYEE_LEAVE_RECORD_NOT_FOUND));
 
         // Leave status must be in pending
-        if(returnedEmployeeLeave.getReviewedBy() != null){
+        if (returnedEmployeeLeave.getReviewedBy() != null) {
             throw new DataConflictException(ExceptionConstants.EMPLOYEE_LEAVE_ACTION_ALREADY_TAKEN);
         }
         returnedEmployeeLeave.setFromDate(leaveDTO.getFromDate());
@@ -98,22 +102,21 @@ public class LeaveServiceImpl implements LeaveService {
         return LeaveMapper.mapToDto(employeeLeaveRepository.save(returnedEmployeeLeave));
     }
 
-    /**
-     * Approved Leave request
-     * Leave Record must be present in database else throws Exception
-     *
-     * @param leaveDTO
-     * @return approved Leave
-     */
     @Override
     public LeaveDTO approveEmployeeLeave(LeaveDTO leaveDTO) {
 
         Leave returnedEmployeeLeave = employeeLeaveRepository.findById(leaveDTO.getLeaveId())
                 .orElseThrow(() -> new DataNotFoundException(ExceptionConstants.EMPLOYEE_LEAVE_RECORD_NOT_FOUND));
+        if (returnedEmployeeLeave.getStatus().equals(LeaveStatus.APPROVED)) {
+            throw new DataConflictException(ExceptionConstants.EMPLOYEE_LEAVE_ALREADY_APPROVED);
+        }
+        if (returnedEmployeeLeave.getStatus().equals(LeaveStatus.DENIED)) {
+            throw new DataConflictException(ExceptionConstants.EMPLOYEE_LEAVE_ALREADY_DENIED);
+        }
         Employee employeeSupervisor = returnedEmployeeLeave.getEmployee().getSupervisor();
 
-        long approverId = ExtractUserAuthentication.getCurrentUser().getId();
-        String approverRole = ExtractUserAuthentication.getCurrentUser().getAuthorities().iterator().next().toString();
+        long approverId = ExtractAuthUser.getCurrentUser().getEmployeeId();
+        String approverRole = ExtractAuthUser.getCurrentUser().getRole();
 
         // Setting Approver Id extracting from ExtractUserAuthentication currentUser id
         Employee approverEmployee = new Employee();
@@ -121,11 +124,11 @@ public class LeaveServiceImpl implements LeaveService {
 
         // Employee cant approve their own request
         // If employee is user then must be his supervisor
-        if(!approverRole.equals("ROLE_ADMIN") || approverId == returnedEmployeeLeave.getEmployee().getEmployeeId()){
+        if (!approverRole.equals("ROLE_ADMIN") || approverId == returnedEmployeeLeave.getEmployee().getEmployeeId()) {
 
-            if(approverId == returnedEmployeeLeave.getEmployee().getEmployeeId() ||
+            if (approverId == returnedEmployeeLeave.getEmployee().getEmployeeId() ||
                     employeeSupervisor == null || employeeSupervisor.getEmployeeId() == null ||
-                    approverId != employeeSupervisor.getEmployeeId()){
+                    approverId != employeeSupervisor.getEmployeeId()) {
                 throw new UnauthorizedRequest(ExceptionConstants.YOU_CANT_REVIEW_THIS_REQUEST);
             }
 //            throw new UnauthorizedRequest(ExceptionConstants.YOU_CANT_REVIEW_THIS_REQUEST);
@@ -136,14 +139,6 @@ public class LeaveServiceImpl implements LeaveService {
         return LeaveMapper.mapToDto(employeeLeaveRepository.save(returnedEmployeeLeave));
     }
 
-    /**
-     * Delete Leave request that is still pending
-     * Leave Record must be present in database else throws Exception
-     * Leave status must be in pending else throws Exception
-     *
-     * @param id
-     * @return boolean value of Leave Deletion
-     */
     @Override
     public LeaveDTO ChangeEmployeeLeaveStatus(Long id, String status) {
 
@@ -151,7 +146,7 @@ public class LeaveServiceImpl implements LeaveService {
                 .orElseThrow(() -> new DataNotFoundException(ExceptionConstants.EMPLOYEE_LEAVE_RECORD_NOT_FOUND));
 
         // Leave status must be in pending
-        if(returnedEmployeeLeave.getReviewedBy() != null){
+        if (returnedEmployeeLeave.getReviewedBy() != null) {
             throw new DataConflictException(ExceptionConstants.EMPLOYEE_LEAVE_ACTION_ALREADY_TAKEN);
         }
         returnedEmployeeLeave.setStatus(StatusMapper.mapLeaveStatus(status));

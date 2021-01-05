@@ -178,15 +178,15 @@ public class Leave {
         Leave leave = (Leave) o;
         return
                 Objects.equals(leaveId, leave.leaveId) &&
-                Objects.equals(employee, leave.employee) &&
-                Objects.equals(leaveType, leave.leaveType) &&
-                Objects.equals(leaveReason, leave.leaveReason) &&
-                Objects.equals(fromDate, leave.fromDate) &&
-                Objects.equals(toDate, leave.toDate) &&
-                Objects.equals(deniedReason, leave.deniedReason) &&
-                status == leave.status &&
-                Objects.equals(createdAt, leave.createdAt) &&
-                Objects.equals(reviewedBy, leave.reviewedBy);
+                        Objects.equals(employee, leave.employee) &&
+                        Objects.equals(leaveType, leave.leaveType) &&
+                        Objects.equals(leaveReason, leave.leaveReason) &&
+                        Objects.equals(fromDate, leave.fromDate) &&
+                        Objects.equals(toDate, leave.toDate) &&
+                        Objects.equals(deniedReason, leave.deniedReason) &&
+                        status == leave.status &&
+                        Objects.equals(createdAt, leave.createdAt) &&
+                        Objects.equals(reviewedBy, leave.reviewedBy);
     }
 
     @Override

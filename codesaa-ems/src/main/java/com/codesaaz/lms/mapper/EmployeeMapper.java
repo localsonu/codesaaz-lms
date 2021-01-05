@@ -34,6 +34,9 @@ public class EmployeeMapper {
         employee.setPhoneNumber(employeeDTO.getPhoneNumber());
         employee.setCreatedAt(employeeDTO.getCreatedAt());
         employee.setStatus(StatusMapper.mapEmployeeStatus(employeeDTO.getStatus()));
+        employee.setTotalLeave(employeeDTO.getTotalLeave());
+        employee.setLeaveConsumed(employeeDTO.getLeaveConsumed());
+        employee.setLeaveRemaining(employeeDTO.getLeaveRemaining());
         return employee;
     }
 

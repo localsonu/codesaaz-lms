@@ -1,6 +1,7 @@
 package com.codesaaz.lms.service;
 
 import com.codesaaz.lms.dto.LeaveDTO;
+import com.codesaaz.lms.entity.Leave;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +15,9 @@ public interface LeaveService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     LeaveDTO getEmployeeLeaveById(Long id);
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    Page<Leave> getEmployeeLeaveByEmployeeId(Pageable pageable, Long id);
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     LeaveDTO createEmployeeLeave(LeaveDTO leaveDTO);

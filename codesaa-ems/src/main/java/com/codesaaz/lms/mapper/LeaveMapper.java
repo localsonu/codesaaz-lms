@@ -3,15 +3,17 @@ package com.codesaaz.lms.mapper;
 import com.codesaaz.lms.dto.LeaveDTO;
 import com.codesaaz.lms.entity.Leave;
 
+import java.util.List;
+
 public class LeaveMapper {
 
-    public static LeaveDTO mapToDto(Leave employeeLeave){
+    public static LeaveDTO mapToDto(Leave employeeLeave) {
         LeaveDTO employeeLeaveDTO = new LeaveDTO();
         employeeLeaveDTO.setLeaveId(employeeLeave.getLeaveId());
-        if(employeeLeave.getEmployee() != null) {
+        if (employeeLeave.getEmployee() != null) {
             employeeLeaveDTO.setEmployeeDTO(EmployeeMapper.mapToDto(employeeLeave.getEmployee()));
         }
-        if(employeeLeave.getLeaveType() != null) {
+        if (employeeLeave.getLeaveType() != null) {
             employeeLeaveDTO.setLeaveTypeDTO(LeaveTypeMapper.mapToDto(employeeLeave.getLeaveType()));
         }
         employeeLeaveDTO.setLeaveReason(employeeLeave.getLeaveReason());
@@ -20,19 +22,19 @@ public class LeaveMapper {
         employeeLeaveDTO.setDeniedReason(employeeLeave.getDeniedReason());
         employeeLeaveDTO.setStatus(String.valueOf(employeeLeave.getStatus()));
         employeeLeaveDTO.setCreatedAt(employeeLeave.getCreatedAt());
-        if(employeeLeave.getReviewedBy() != null) {
+        if (employeeLeave.getReviewedBy() != null) {
             employeeLeaveDTO.setReviewedBy(EmployeeMapper.mapToDto(employeeLeave.getReviewedBy()));
         }
         return employeeLeaveDTO;
     }
 
-    public static Leave mapToEntity(LeaveDTO employeeLeaveDTO){
+    public static Leave mapToEntity(LeaveDTO employeeLeaveDTO) {
         Leave employeeLeave = new Leave();
         employeeLeave.setLeaveId(employeeLeaveDTO.getLeaveId());
-        if(employeeLeaveDTO.getEmployeeDTO() != null) {
+        if (employeeLeaveDTO.getEmployeeDTO() != null) {
             employeeLeave.setEmployee(EmployeeMapper.mapToEntity(employeeLeaveDTO.getEmployeeDTO()));
         }
-        if(employeeLeaveDTO.getLeaveTypeDTO() != null) {
+        if (employeeLeaveDTO.getLeaveTypeDTO() != null) {
             employeeLeave.setLeaveType(LeaveTypeMapper.mapToEntity(employeeLeaveDTO.getLeaveTypeDTO()));
         }
         employeeLeave.setLeaveReason(employeeLeaveDTO.getLeaveReason());
@@ -41,9 +43,31 @@ public class LeaveMapper {
         employeeLeave.setDeniedReason(employeeLeaveDTO.getDeniedReason());
         employeeLeave.setStatus(StatusMapper.mapLeaveStatus(employeeLeaveDTO.getStatus()));
         employeeLeave.setCreatedAt(employeeLeaveDTO.getCreatedAt());
-        if(employeeLeaveDTO.getReviewedBy() != null) {
+        if (employeeLeaveDTO.getReviewedBy() != null) {
             employeeLeave.setReviewedBy(EmployeeMapper.mapToEntity(employeeLeaveDTO.getReviewedBy()));
         }
         return employeeLeave;
+    }
+
+    public static LeaveDTO mapListToDto(List<Leave> employeeLeaveList) {
+        LeaveDTO employeeLeaveDTO = new LeaveDTO();
+        for (Leave employeeLeave :  employeeLeaveList){
+            employeeLeaveDTO.setLeaveId(employeeLeave.getLeaveId());
+        if (employeeLeave.getEmployee() != null) {
+            employeeLeaveDTO.setEmployeeDTO(EmployeeMapper.mapToDto(employeeLeave.getEmployee()));
+        }
+        if (employeeLeave.getLeaveType() != null) {
+            employeeLeaveDTO.setLeaveTypeDTO(LeaveTypeMapper.mapToDto(employeeLeave.getLeaveType()));
+        }
+        employeeLeaveDTO.setLeaveReason(employeeLeave.getLeaveReason());
+        employeeLeaveDTO.setFromDate(employeeLeave.getFromDate());
+        employeeLeaveDTO.setToDate(employeeLeave.getToDate());
+        employeeLeaveDTO.setDeniedReason(employeeLeave.getDeniedReason());
+        employeeLeaveDTO.setStatus(String.valueOf(employeeLeave.getStatus()));
+        employeeLeaveDTO.setCreatedAt(employeeLeave.getCreatedAt());
+        if (employeeLeave.getReviewedBy() != null) {
+            employeeLeaveDTO.setReviewedBy(EmployeeMapper.mapToDto(employeeLeave.getReviewedBy()));
+        }}
+        return employeeLeaveDTO;
     }
 }

@@ -56,14 +56,6 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.getEmployeeById(id), HttpStatus.OK);
     }
 
-    /**
-     * Retrieve Authenticated Employee Profile.
-     * Http Get method must be specified.
-     * Url must be set on - server-url/base-path/employees/profile
-     * The data is returned in JSON format
-     *
-     * @return Employee in JSON format
-     */
     @GetMapping("/me")
     public ResponseEntity<?> retrieveAuthenticatedEmployee() {
 
@@ -71,15 +63,6 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.retrieveAuthenticatedEmployee(), HttpStatus.OK);
     }
 
-    /**
-     * Create Employee.
-     * Http Post method must be specified.
-     * Url must be set on - server-url/base-path/employee
-     * The data is returned in JSON format
-     *
-     * @param employeeDTO JSON data specifying employee to add
-     * @return Created Employee in JSON format
-     */
     @PostMapping
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
 
@@ -87,15 +70,6 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.createEmployee(employeeDTO), HttpStatus.OK);
     }
 
-    /**
-     * Update Employee
-     * Http Put method must be specified.
-     * Url must be set on - server-url/base-path/employee
-     * The data is returned in JSON format
-     *
-     * @param employeeDTO JSON data specifying Employee to update
-     * @return Created Employee in JSON format
-     */
     @PutMapping
     public ResponseEntity<?> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
 
@@ -110,15 +84,6 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.updatePassword(oldPassword, newPassword), HttpStatus.OK);
     }
 
-    /**
-     * Retrieve all Employees under supervision.
-     * Http Get method must be specified.
-     * Url must be set on - server-url/base-path/employees-under-supervision/{id}
-     * The data is returned in JSON format
-     *
-     * @param id of employee who is supervising
-     * @return All Employee under supervision
-     */
     @GetMapping("/employees-under-supervision/{id}")
     public ResponseEntity<?> retrieveAllEmployeesUnderSupervision(@PathVariable long id) {
 
@@ -126,24 +91,12 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.getAllEmployeeUnderSupervision(id), HttpStatus.OK);
     }
 
-    /**
-     * Retrieve Employees By fullname.
-     * Http Get method must be specified.
-     * Url must be set on - server-url/base-path/employee-by-fullname
-     * The data is returned in JSON format
-     *
-     * @param pageable
-     * @param fullname
-     * @return Employee matching fullname
-     */
     @GetMapping("/employee-by-fullname")
     public ResponseEntity<?> retrieveAllEmployeesByFullName(@PageableDefault(page = 0, size = 10) Pageable pageable, @RequestParam("fullname") String fullname) {
 
         LOGGER.info("API Return Employee´s By FullName");
         return new ResponseEntity<>(employeeService.getAllEmployeesByName(pageable, fullname).getContent(), HttpStatus.OK);
     }
-
-
 
 
 }

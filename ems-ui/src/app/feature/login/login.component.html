@@ -1,0 +1,63 @@
+<div class="container">
+  <div class="row login-container d-flex align-items-center">
+    <div class="col-md-4 bg-image">
+      <div class="login-overlay">
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="login">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-9 col-lg-8 mx-auto">
+              <!--                            <div class="login-logo">-->
+              <!--                              <img src="/assets/images/codesaaz-logo.png">-->
+              <!--                            </div>-->
+              <div></div>
+              <h3 class="login-heading mb-4">CodeSaaz LMS</h3>
+              <form [formGroup]="loginForm" (ngSubmit)="login()">
+                <div
+                  *ngIf="!!responseMessage"
+                  [ngClass]="hasError ? 'alert alert-danger' : 'alert alert-info'">
+                  {{ responseMessage }}
+                </div>
+                <div class="form-label-group">
+                  <label for="inputUsername">Username:</label>
+                  <input type="username" id="inputUsername" class="form-control" placeholder="Username"
+                         formControlName="username"
+                         [ngClass]="{ 'is-invalid': isSubmitted && formControls.username.errors }" required autofocus>
+                </div>
+                <div class="invalid-select" *ngIf="isSubmitted && formControls.username.errors">
+                  <div class="text-danger" *ngIf="formControls.username.errors.required">
+                    {{ validationMessage.username.required }}
+                  </div>
+                </div>
+
+                <div class="form-label-group pt-2">
+                  <label for="inputPassword">Password:</label>
+                  <input type="password" id="inputPassword" class="form-control" placeholder="Password"
+                         formControlName="password"
+                         [ngClass]="{ 'is-invalid': isSubmitted && formControls.password.errors }" required>
+                </div>
+                <div class="invalid-select" *ngIf="isSubmitted && formControls.password.errors">
+                  <div class="text-danger" *ngIf="formControls.password.errors.required">
+                    {{ validationMessage.password.required }}
+                  </div>
+                </div>
+                <br>
+
+                <!-- <div class="custom-control custom-checkbox mt-2 mb-2">
+                  <input type="checkbox" class="custom-control-input" id="customCheck1">
+                  <label class="custom-control-label" for="customCheck1">Remember password</label>
+                </div> -->
+                <button class="btn btn-sm btn-block btn-primary col-6 text-uppercase mb-2" type="submit">Login in
+                </button>
+                <div class="text-center">
+                  <a class="small" href="#">Forgot password?</a></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
