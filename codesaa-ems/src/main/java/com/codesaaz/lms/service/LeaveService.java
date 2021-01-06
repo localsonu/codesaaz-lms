@@ -27,7 +27,7 @@ public interface LeaveService {
     LeaveDTO updateEmployeeLeave(LeaveDTO leaveDTO);
 
     // only admin and EmployeeSupervisor
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     LeaveDTO approveEmployeeLeave(LeaveDTO leaveDTO);
 
     // only employee on their own pending leave request

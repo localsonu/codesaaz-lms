@@ -18,6 +18,9 @@ public class EmployeeMapper {
         employeeDTO.setPhoneNumber((employee.getPhoneNumber()));
         employeeDTO.setCreatedAt(employee.getCreatedAt());
         employeeDTO.setStatus(String.valueOf(employee.getStatus()));
+        employeeDTO.setTotalLeave(employee.getTotalLeave());
+        employeeDTO.setLeaveRemaining(employee.getLeaveRemaining());
+        employeeDTO.setLeaveConsumed(employee.getLeaveConsumed());
         return employeeDTO;
     }
 

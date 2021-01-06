@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EmployeeLeaveService } from './../../services/employeeLeave.service';
 import { Component, OnInit } from '@angular/core';
 import { EmployeeLeave } from '../../model/EmployeeLeave';
+import {AuthService} from '../../auth/auth.service';
 
 @Component({
   selector: 'app-leaverequest-details',
@@ -23,7 +24,7 @@ export class LeaverequestDetailsComponent implements OnInit {
   approve_leave_update_msg: String;
   submitted = false;
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private _employeeLeaveService: EmployeeLeaveService) { }
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private _employeeLeaveService: EmployeeLeaveService, private _authService: AuthService) { }
 
   ngOnInit() {
     this.routeId();

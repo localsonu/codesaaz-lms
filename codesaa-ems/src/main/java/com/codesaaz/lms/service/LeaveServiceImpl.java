@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +35,6 @@ public class LeaveServiceImpl implements LeaveService {
         this.employeeRepository = employeeRepository;
     }
 
-    /**
-     * Get all Leave Record
-     *
-     * @return List of Leave
-     */
     @Override
     public Page<LeaveDTO> getAllEmployeeLeaves(Pageable pageable) {
 
@@ -45,12 +42,6 @@ public class LeaveServiceImpl implements LeaveService {
                 .map(employeeLeave -> LeaveMapper.mapToDto(employeeLeave));
     }
 
-    /**
-     * Get single Leave Record
-     *
-     * @param id
-     * @return If present Leave else throw Exception
-     */
     @Override
     public LeaveDTO getEmployeeLeaveById(Long id) {
 
@@ -114,7 +105,6 @@ public class LeaveServiceImpl implements LeaveService {
             throw new DataConflictException(ExceptionConstants.EMPLOYEE_LEAVE_ALREADY_DENIED);
         }
         Employee employeeSupervisor = returnedEmployeeLeave.getEmployee().getSupervisor();
-
         long approverId = ExtractAuthUser.getCurrentUser().getEmployeeId();
         String approverRole = ExtractAuthUser.getCurrentUser().getRole();
 
@@ -123,7 +113,6 @@ public class LeaveServiceImpl implements LeaveService {
         approverEmployee.setEmployeeId(approverId);
 
         // Employee cant approve their own request
-        // If employee is user then must be his supervisor
         if (!approverRole.equals("ROLE_ADMIN") || approverId == returnedEmployeeLeave.getEmployee().getEmployeeId()) {
 
             if (approverId == returnedEmployeeLeave.getEmployee().getEmployeeId() ||
@@ -133,10 +122,33 @@ public class LeaveServiceImpl implements LeaveService {
             }
 //            throw new UnauthorizedRequest(ExceptionConstants.YOU_CANT_REVIEW_THIS_REQUEST);
         }
+        updateLeaveinDb(returnedEmployeeLeave);
         returnedEmployeeLeave.setStatus(StatusMapper.mapLeaveStatus(String.valueOf(leaveDTO.getStatus())));
         returnedEmployeeLeave.setReviewedBy(approverEmployee);
         returnedEmployeeLeave.setDeniedReason(leaveDTO.getDeniedReason());
         return LeaveMapper.mapToDto(employeeLeaveRepository.save(returnedEmployeeLeave));
+    }
+
+    private void updateLeaveinDb(Leave leave) {
+        try {
+            Employee employee = leave.getEmployee();
+            int total = employee.getTotalLeave();
+            int dateFrom = leave.getFromDate().getDayOfYear();
+            int dateTo = leave.getToDate().getDayOfYear();
+            int numberOfLeaves = dateTo - dateFrom;
+            if (numberOfLeaves > 0) {
+                employee.setLeaveConsumed(employee.getLeaveConsumed() + numberOfLeaves);
+            } else {
+                employee.setLeaveConsumed(employee.getLeaveConsumed() + 1);
+            }
+            if (employee.getLeaveRemaining() == 0)
+                employee.setLeaveRemaining(total - numberOfLeaves);
+            else
+                employee.setLeaveRemaining(employee.getLeaveRemaining() - numberOfLeaves);
+            employeeRepository.save(employee);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

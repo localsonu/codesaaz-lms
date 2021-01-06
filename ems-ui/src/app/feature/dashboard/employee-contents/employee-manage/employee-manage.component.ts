@@ -32,14 +32,14 @@ export class EmployeeManageComponent implements OnInit {
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       middleName: [''],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
-
       username: ['', [Validators.required, Validators.minLength(2)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       phoneNumber: ['', [Validators.required, Validators.min(1000000000), Validators.max(9999999999)]],
       email: [''],
       supervisor: [],
       status: ['ACTIVE', Validators.required],
-      totalLeave: ['', [Validators.required, Validators.minLength(2)]],
+      totalLeave: ['', [Validators.required, Validators.min(1), Validators.max(20)]],
+      cnic: ['', [Validators.required, Validators.minLength(13)]]
     });
 
 

@@ -73,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeDTO.setStatus(employeeDTO.getStatus());
         employeeDTO.setTotalLeave(employeeDTO.getTotalLeave());
         employeeDTO.setLeaveConsumed(0);
-        employeeDTO.setLeaveRemaining(0);
+        employeeDTO.setLeaveRemaining(employeeDTO.getTotalLeave());
         Employee employee = employeeRepository.save(EmployeeMapper.mapToEntityWithSupervisor(employeeDTO));
         return EmployeeMapper.mapToDto(employee);
     }

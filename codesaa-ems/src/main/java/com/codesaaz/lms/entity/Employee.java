@@ -46,6 +46,10 @@ public class Employee {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(name = "joining_date", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime joiningDate;
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
@@ -67,6 +71,8 @@ public class Employee {
     @Column(name = "leave_consumed", nullable = true)
     private Integer leaveConsumed;
 
+    @Column(name = "cnic", nullable = false)
+    private Integer cnic;
 
     public Integer getTotalLeave() {
         return totalLeave;
@@ -196,6 +202,22 @@ public class Employee {
         this.group = group;
     }
 
+    public Integer getCnic() {
+        return cnic;
+    }
+
+    public void setCnic(Integer cnic) {
+        this.cnic = cnic;
+    }
+
+    public LocalDateTime getJoiningDate() {
+        return joiningDate;
+    }
+
+    public void setJoiningDate(LocalDateTime joiningDate) {
+        this.joiningDate = joiningDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -216,12 +238,14 @@ public class Employee {
                 Objects.equals(totalLeave, employee.totalLeave) &&
                 Objects.equals(leaveRemaining, employee.leaveRemaining) &&
                 Objects.equals(leaveConsumed, employee.leaveConsumed) &&
-                Objects.equals(group, employee.group);
+                Objects.equals(group, employee.group) &&
+                Objects.equals(joiningDate, employee.joiningDate) &&
+                Objects.equals(cnic, employee.cnic);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(employeeId, firstName, middleName, lastName, email, username, password, role, phoneNumber, createdAt, status, supervisor, group, leaveConsumed, leaveRemaining, totalLeave);
+        return Objects.hash(employeeId, firstName, middleName, lastName, email, username, password, role, phoneNumber, createdAt, status, supervisor, group, leaveConsumed, leaveRemaining, totalLeave, joiningDate, cnic);
     }
 
     public Employee(Employee employee) {
@@ -241,5 +265,8 @@ public class Employee {
         this.totalLeave = employee.getTotalLeave();
         this.leaveRemaining = employee.getLeaveRemaining();
         this.leaveConsumed = employee.getLeaveConsumed();
+        this.cnic = employee.getCnic();
+        this.joiningDate = employee.getJoiningDate();
     }
+
 }

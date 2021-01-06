@@ -35,6 +35,9 @@
             <p>Email: {{selectedEmployee.email}}</p>
             <p>Role: {{selectedEmployee.role}}</p>
             <p>Status: {{selectedEmployee.status}}</p>
+            <p>Remaining Leave : {{selectedEmployee.leaveRemaining}}</p>
+            <p>Total Leave : {{selectedEmployee.totalLeave}}</p>
+            <p>Approved: {{selectedEmployee.leaveConsumed}}</p>
             <p *ngIf="selectedEmployee.supervisor">Supervisor: <a routerLink="/home/employees/details/{{selectedEmployee.supervisor.employeeId}}"
                 routerLinkActive="active">
                 {{selectedEmployee.supervisor.firstName}} {{selectedEmployee.supervisor.middleName}}
@@ -42,22 +45,22 @@
               </a></p>
           </div>
           <div class="col-md-6">
-            <div class="font-italic">
-              <mat-expansion-panel>
-                <mat-expansion-panel-header (click)="getEmployeeUnderSupervision()">
-                  <span class="expansion-header">Employee Under Supervision</span>
-                </mat-expansion-panel-header>
+<!--            <div class="font-italic">-->
+<!--              <mat-expansion-panel>-->
+<!--                <mat-expansion-panel-header (click)="getEmployeeUnderSupervision()">-->
+<!--                  <span class="expansion-header">Employee Under Supervision</span>-->
+<!--                </mat-expansion-panel-header>-->
 
-                <div *ngIf="employeesUnderSupervision">
-                  <div *ngFor="let e of employeesUnderSupervision; let i = index">
-                    <p>{{i+1}} . <a routerLink="/home/employees/details/{{e.employeeId}}">
-                        {{e.firstName}} {{e.middleName}} {{e.lastName}}
-                      </a></p>
-                  </div>
-                </div>
+<!--                <div *ngIf="employeesUnderSupervision">-->
+<!--                  <div *ngFor="let e of employeesUnderSupervision; let i = index">-->
+<!--                    <p>{{i+1}} . <a routerLink="/home/employees/details/{{e.employeeId}}">-->
+<!--                        {{e.firstName}} {{e.middleName}} {{e.lastName}}-->
+<!--                      </a></p>-->
+<!--                  </div>-->
+<!--                </div>-->
 
-              </mat-expansion-panel>
-            </div>
+<!--              </mat-expansion-panel>-->
+<!--            </div>-->
           </div>
         </div>
 

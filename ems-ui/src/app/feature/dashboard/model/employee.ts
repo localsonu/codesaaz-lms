@@ -8,6 +8,7 @@ export class Employee {
   status: number;
   leaveRemaining: number;
   totalLeave: number;
+  leaveConsumed: number;
   employeeSupervisor: Employee;
 
   constructor(id) {

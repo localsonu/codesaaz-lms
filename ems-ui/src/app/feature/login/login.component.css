@@ -55,3 +55,11 @@ background-image: url("/assets/images/codesaaz-logo.png");
 .login-heading {
   font-weight: 100;
 }
+
+.login-heading-2 {
+  font-weight: 100;
+  text-align: center;
+  position: relative;
+  margin-top: 140px;
+  mask-image: -moz-element(45);
+}

@@ -11,7 +11,7 @@
 
     <div class="row col-md-12">
       <div class="col-md-12">
-        <button class="btn btn-info float-right" (click)="toggleEdit()">
+        <button class="btn btn-info float-right" (click)="toggleEdit()" *ngIf="_authService.isAdmin()">
           {{isRequestEdit ? "View Request" : "Approve Request"}}
         </button>
       </div>
@@ -48,6 +48,7 @@
             <p>To: {{selectedLeaveRequest.toDate}}</p>
             <p>Status: {{selectedLeaveRequest.status}}</p>
             <p>Leave Remaining: {{selectedLeaveRequest.employeeDTO.leaveRemaining}}</p>
+            <p>Leave Consumed: {{selectedLeaveRequest.employeeDTO.leaveConsumed}}</p>
             <p>Total Leave: {{selectedLeaveRequest.employeeDTO.totalLeave}}</p>
           </div>
 
