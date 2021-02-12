@@ -70,7 +70,7 @@ body {
   position: absolute;
   bottom: 0px;
   top: 700px;
-  margin-left: auto;
+  margin-left: fill;
   margin-right: auto;
 }
 

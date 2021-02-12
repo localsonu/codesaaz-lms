@@ -12,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
 @SpringBootApplication
 public class EmployeeLeaveApplication implements CommandLineRunner {
 
@@ -25,6 +26,7 @@ public class EmployeeLeaveApplication implements CommandLineRunner {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private EmployeeRepository employeeRepository;
 

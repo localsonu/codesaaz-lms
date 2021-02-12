@@ -17,6 +17,12 @@
     <li>
       <a routerLink="/home/event" *ngIf="_authService.isAdmin()" routerLinkActive="active">Event</a>
     </li>
+    <li>
+      <a routerLink="/home" *ngIf="_authService.isAdmin()" routerLinkActive="active">Employee Inventory&nbsp;<span class="alert-danger"> soon</span></a>
+    </li>
+    <li>
+      <a routerLink="/home" *ngIf="_authService.isAdmin()" routerLinkActive="active">Events Budget&nbsp;<span class="alert-danger"> soon</span></a>
+    </li>
   </ul>
 
 </nav>

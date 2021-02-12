@@ -32,7 +32,17 @@ public class EmployeeDTO {
 
     private String status;
 
+    private Integer cnic;
+
     private EmployeeDTO supervisor;
+
+    public Integer getCnic() {
+        return cnic;
+    }
+
+    public void setCnic(Integer cnic) {
+        this.cnic = cnic;
+    }
 
     public Long getEmployeeId() {
         return employeeId;

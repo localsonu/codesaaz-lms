@@ -23,15 +23,6 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    /**
-     * Retrieve all Employees.
-     * Http Get method must be specified.
-     * Url must be set on - server-url/base-path/employees
-     * The data is returned in JSON format
-     *
-     * @param pageable
-     * @return List of Employee in JSON format
-     */
     @GetMapping
     public ResponseEntity<?> retrieveAllEmployees(@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -39,16 +30,6 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.getAllEmployees(pageable), HttpStatus.OK);
     }
 
-
-    /**
-     * Retrieve single Employee.
-     * Http Get method must be specified.
-     * Url must be set on - server-url/base-path/employees/{id}
-     * The data is returned in JSON format
-     *
-     * @param id id of Employee that we want to retrieve
-     * @return Employee in JSON format
-     */
     @GetMapping("/{id}")
     public ResponseEntity<?> retrieveEmployee(@PathVariable long id) {
 

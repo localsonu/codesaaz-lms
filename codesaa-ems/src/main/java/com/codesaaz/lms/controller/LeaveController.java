@@ -30,26 +30,20 @@ public class LeaveController {
         return new ResponseEntity<>(employeeLeaveService.getAllEmployeeLeaves(pageable), HttpStatus.OK);
     }
 
-    /**
-     * Retrieve single Leave
-     * Http Get Method must be specified
-     * Url must be set on - server-url/base-path/employee-leave/{id}
-     *
-     * @param id of Leave that we want to retrieve
-     * @return Single Employee in JSON format
-     */
     @GetMapping("/{id}")
     public ResponseEntity<?> retrieveEmployeeLeave(@PathVariable long id) {
 
         LOGGER.info("API Retrieve single Leave");
         return new ResponseEntity<>(employeeLeaveService.getEmployeeLeaveById(id), HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<?> createEmployeeLeave(@RequestBody LeaveDTO leaveDTO) {
 
         LOGGER.info("API Create Leave Request");
         return new ResponseEntity<>(employeeLeaveService.createEmployeeLeave(leaveDTO), HttpStatus.OK);
     }
+
     @PutMapping
     public ResponseEntity<?> updateEmployeeLeave(@RequestBody LeaveDTO leaveDTO) {
 
